@@ -1,0 +1,23 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql:///xdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    port: 6379
+    host: localhost
+logging:
+  level:
+    com.alan: debug
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
