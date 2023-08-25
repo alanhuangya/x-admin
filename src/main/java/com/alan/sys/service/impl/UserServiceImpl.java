@@ -1,5 +1,6 @@
 package com.alan.sys.service.impl;
 
+import com.alan.common.utils.JwtUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.alan.sys.entity.User;
@@ -33,6 +34,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Override
     public Map<String, Object> login(User user) {
         // 根据用户名查询
@@ -41,12 +45,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User loginUser = this.baseMapper.selectOne(wrapper);
         // 结果不为空，并且密码和传入密码匹配，则生成token，并将用户信息存入redis
         if(loginUser != null && passwordEncoder.matches(user.getPassword(),loginUser.getPassword())){
-            // 暂时用UUID, 终极方案是jwt
-            String key = "user:" + UUID.randomUUID();
-
-            // 存入redis
-            loginUser.setPassword(null);
-            redisTemplate.opsForValue().set(key,loginUser,30, TimeUnit.MINUTES);
+            //创建jwt
+            String key = jwtUtil.createToken(loginUser);
 
             // 返回数据
             Map<String, Object> data = new HashMap<>();
@@ -82,10 +82,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Map<String, Object> getUserInfo(String token) {
-        // 根据token获取用户信息，redis
-        Object obj = redisTemplate.opsForValue().get(token);
-        if(obj != null){
-            User loginUser = JSON.parseObject(JSON.toJSONString(obj),User.class);
+        //jwt解析token
+        User loginUser = null;
+        try {
+            loginUser = jwtUtil.parseToken(token, User.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        if(loginUser != null){
             Map<String, Object> data = new HashMap<>();
             data.put("name",loginUser.getUsername());
             data.put("avatar", loginUser.getAvatar());
@@ -101,6 +105,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public void logout(String token) {
-        redisTemplate.delete(token);
+        //redisTemplate.delete(token);
     }
 }

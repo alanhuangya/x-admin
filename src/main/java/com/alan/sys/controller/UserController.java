@@ -4,6 +4,8 @@ import com.alan.common.vo.Result;
 import com.alan.sys.entity.User;
 import com.alan.sys.service.IUserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +28,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
  * @author alan
  * @since 2023-08-09
  */
+@Api(tags = "用户接口列表")
 @RestController
 @RequestMapping("/user")
 //@CrossOrigin
@@ -42,6 +45,7 @@ public class UserController {
         return Result.success(list,"查询成功");
     }
 
+    @ApiOperation("用户登录")
     @PostMapping("/login")
     public Result<Map<String,Object>> login(@RequestBody User user) {
         Map<String,Object> data = userService.login(user);
