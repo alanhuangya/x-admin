@@ -1,9 +1,16 @@
 package com.alan.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -14,6 +21,7 @@ import java.io.Serializable;
  * @since 2023-08-09
  */
 @TableName("x_menu")
+@Data
 public class Menu implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,99 +47,22 @@ public class Menu implements Serializable {
 
     private Boolean hidden;
 
-    public Integer getMenuId() {
-        return menuId;
+    // 表示当前菜单的子菜单,不是数据库字段,不会映射到数据库
+    @TableField(exist = false)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<Menu> children;
+
+    // 表示当前菜单的元数据,不是数据库字段,不会映射到数据库
+    @TableField(exist = false)
+    private Map<String, Object> meta;
+
+    public Map<String, Object> getMeta() {
+        meta = new HashMap<>();
+        // 将title和icon封装到meta中
+        meta.put("title",title);
+        meta.put("icon",icon);
+        return meta;
     }
 
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
-    }
 
-    public String getComponent() {
-        return component;
-    }
-
-    public void setComponent(String component) {
-        this.component = component;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getRedirect() {
-        return redirect;
-    }
-
-    public void setRedirect(String redirect) {
-        this.redirect = redirect;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getIsLeaf() {
-        return isLeaf;
-    }
-
-    public void setIsLeaf(String isLeaf) {
-        this.isLeaf = isLeaf;
-    }
-
-    public Boolean getHidden() {
-        return hidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-            "menuId = " + menuId +
-            ", component = " + component +
-            ", path = " + path +
-            ", redirect = " + redirect +
-            ", name = " + name +
-            ", title = " + title +
-            ", icon = " + icon +
-            ", parentId = " + parentId +
-            ", isLeaf = " + isLeaf +
-            ", hidden = " + hidden +
-        "}";
-    }
 }

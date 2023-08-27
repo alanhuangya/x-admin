@@ -2,6 +2,9 @@ package com.alan.sys.service;
 
 import com.alan.sys.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.swagger.models.auth.In;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IMenuService extends IService<Menu> {
 
+    List<Menu> getAllMenu();
+
+    List<Menu> getMenuListByUserId(Integer userId);
 }

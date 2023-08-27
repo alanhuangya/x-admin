@@ -22,10 +22,14 @@ public class MyInterceptorConfig implements WebMvcConfigurer {
                         "/user/login",
                         "/user/info",
                         "/user/logout",
+                        "/role/list",
+                        "/role/all",
+                        "/role/add",
                         "/swagger-ui/**",
                         "/swagger-resources/**",
                         "/v3/**",
                         "/error"
+
                 );
     }
 }

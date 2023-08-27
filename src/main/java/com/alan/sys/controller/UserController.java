@@ -56,12 +56,13 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public Result<Map<String, Object>> getUserInfo(@RequestParam("token") String token) {
-        Map<String, Object> data = userService.getUserInfo(token);
-        if (data != null) {
+    public Result<Map<String,Object>> getUserInfo(@RequestParam("token") String token){
+        // 根据token获取用户信息，redis
+        Map<String,Object> data = userService.getUserInfo(token);
+        if(data != null){
             return Result.success(data);
         }
-        return Result.fail(20003,"获取用户信息失败");
+        return Result.fail(20003,"登录信息无效，请重新登录");
     }
 
     //注销
@@ -94,7 +95,7 @@ public class UserController {
     @PostMapping("/add")
     public Result<?> addUser(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.save(user);
+        userService.addUser(user);
         return Result.success("添加成功");
     }
 
@@ -102,21 +103,21 @@ public class UserController {
     @PutMapping("/update")
     public Result<?> updateUser(@RequestBody User user) {
         user.setPassword(null);
-        userService.updateById(user);
+        userService.updateUser(user);
         return Result.success("修改成功");
     }
 
     //通过id查询用户
     @GetMapping("/{id}")
     public Result<User> getUserById(@PathVariable("id") Integer id) {
-        User user = userService.getById(id);
+        User user = userService.getUserById(id);
         return Result.success(user);
     }
 
     //通过id删除用户
     @DeleteMapping("/{id}")
     public Result<?> deleteUserById(@PathVariable("id") Integer id) {
-        userService.removeById(id);
+        userService.deleteUserById(id);
         return Result.success("删除成功");
     }
 }
