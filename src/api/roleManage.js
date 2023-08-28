@@ -43,7 +43,7 @@ export default {
 
 
   saveRole(role) {
-    if(role.roleId == null || role.roleId == undefined) {
+    if (role.roleId == null || role.roleId == undefined) {
       return this.addRole(role);
     } else {
       return this.updateRole(role);
@@ -56,6 +56,14 @@ export default {
       url: '/role/add',
       method: 'post',
       data: role
+    })
+  },
+
+  //获取所有角色
+  getAllRoleList() {
+    return request({
+      url: '/role/all',
+      method: 'get'
     })
   }
 }

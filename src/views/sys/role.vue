@@ -88,6 +88,24 @@
         >
           <el-input v-model="roleForm.roleDesc" autocomplete="off"></el-input>
         </el-form-item>
+
+        <!-- 树形组件 -->
+        <el-form-item
+          label="权限设置"
+          prop="menuIdList"
+          :label-width="formLabelWidth"
+        >
+          <el-tree
+            ref="menuRef"
+            :data="menuList"
+            :props="menuProps"
+            node-key="menuId"
+            show-checkbox
+            style="width: 80% "
+            default-expand-all
+          >
+          </el-tree>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -98,9 +116,15 @@
 </template>
 <script>
 import roleApi from "@/api/roleManage";
+import menuApi from "@/api/menuManage";
 export default {
   data() {
     return {
+      menuList: [],
+      menuProps: {
+        children: "children",
+        label: "title",
+      },
       roleForm: {},
       formLabelWidth: "120px",
       roleList: [],
@@ -134,6 +158,11 @@ export default {
     };
   },
   methods: {
+    getAllMenu() {
+      menuApi.getAllMenu().then((response) => {
+        this.menuList = response.data;
+      });
+    },
     deleteRole(role) {
       this.$confirm(`您确认删除角色${role.roleNamel} ?`, "提示", {
         confirmButtonText: "确定",
@@ -160,6 +189,7 @@ export default {
     clearForm() {
       this.roleForm = {};
       this.$refs.roleFormRef.clearValidate();
+      this.$refs.menuRef.setCheckedKeys([]);
     },
     roleEdit(id) {
       if (id == null) {
@@ -169,6 +199,7 @@ export default {
         //根据id查询角色信息
         roleApi.getRoleById(id).then((response) => {
           this.roleForm = response.data;
+          this.$refs.menuRef.setCheckedKeys(response.data.menuIdList);
         });
       }
       this.dialogFormVisible = true;
@@ -177,6 +208,10 @@ export default {
       //验证表单
       this.$refs.roleFormRef.validate((validate) => {
         if (validate) {
+          //获取选中的菜单
+          let halfCheckKeys = this.$refs.menuRef.getHalfCheckedKeys();
+          let checkKeys = this.$refs.menuRef.getCheckedKeys();
+          this.roleForm.menuIdList = halfCheckKeys.concat(checkKeys);
           //保存角色
           roleApi.saveRole(this.roleForm).then((response) => {
             //成功提示
@@ -214,6 +249,7 @@ export default {
   },
   created() {
     this.getRoleList();
+    this.getAllMenu();
   },
 };
 </script>
