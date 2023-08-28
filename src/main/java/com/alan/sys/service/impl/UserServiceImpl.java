@@ -1,14 +1,14 @@
 package com.alan.sys.service.impl;
 
-import com.alan.common.utils.JwtUtil;
-import com.alan.sys.entity.Menu;
-import com.alan.sys.entity.UserRole;
-import com.alan.sys.mapper.UserRoleMapper;
-import com.alan.sys.service.IMenuService;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.alan.common.utils.JwtUtil;
+import com.alan.sys.entity.Menu;
 import com.alan.sys.entity.User;
+import com.alan.sys.entity.UserRole;
 import com.alan.sys.mapper.UserMapper;
+import com.alan.sys.mapper.UserRoleMapper;
+import com.alan.sys.service.IMenuService;
 import com.alan.sys.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,9 +96,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Map<String, Object> getUserInfo(String token) {
         // 根据token获取用户信息，redis
+        //Object obj = redisTemplate.opsForValue().get(token);
         User loginUser = null;
         try {
             loginUser = jwtUtil.parseToken(token, User.class);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

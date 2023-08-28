@@ -2,7 +2,6 @@ package com.alan.sys.service;
 
 import com.alan.sys.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.swagger.models.auth.In;
 
 import java.util.List;
 
